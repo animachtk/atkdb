@@ -103,7 +103,6 @@ app.get('/:hash/:col', async (req, res) => {
   if(hash===APP_TOKEN){
   console.log(`list collection: ${col} with params: ${JSON.stringify(req.params)}`)
   CDB(res,"list",col)
-  res.json(items).end()
   }else{
   res.json({msg:"Invalid request"}).end()
   }
