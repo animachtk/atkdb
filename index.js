@@ -17,7 +17,7 @@ app.post('/:hash/:col/:key', async (req, res) => {
   console.log(JSON.stringify(item, null, 2))
   res.json(item).end()
   }else{
-  res.json("Invalid request").end()
+  res.json({msg:"Invalid request"}).end()
   }
 })
 
@@ -32,7 +32,7 @@ app.delete('/:hash/:col/:key', async (req, res) => {
   console.log(JSON.stringify(item, null, 2))
   res.json(item).end()
   }else{
-  res.json("Invalid request").end()
+  res.json({msg:"Invalid request"}).end()
   }
 })
 
@@ -47,7 +47,7 @@ app.get('/:hash/:col/:key', async (req, res) => {
   console.log(JSON.stringify(item, null, 2))
   res.json(item).end()
   }else{
-  res.json("Invalid request").end()
+  res.json({msg:"Invalid request"}).end()
   }
 })
 
@@ -61,7 +61,7 @@ app.get('/:hash/:col', async (req, res) => {
   console.log(JSON.stringify(items, null, 2))
   res.json(items).end()
   }else{
-  res.json("Invalid request").end()
+  res.json({msg:"Invalid request"}).end()
   }
 })
 
