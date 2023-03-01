@@ -39,7 +39,7 @@ async function CDB(res,m,col,key,data){
 		}
 		item = await table.set(key, {data:item})
   //console.log(JSON.stringify(item, null, 2))
-	res.json(item).end()	
+	res.json({key:"Успешно загружено "+item.props.data.length+"новых объекта"}).end()	
 	break;
 	
 	case "delete":
