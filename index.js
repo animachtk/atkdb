@@ -6,16 +6,70 @@ const APP_TOKEN = process.env.API_AUTH_TOKEN;
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.post('/:hash/:col/:key', async (req, res) => {
-  console.log(req.body)
-  const hash = req.params.hash
-  const col = req.params.col
-  const key = req.params.key
-  if(hash===APP_TOKEN){
-  console.log(`from collection: ${col} delete key: ${key} with params ${JSON.stringify(req.params)}`)
-  const item = await db.collection(col).set(key, req.body)
+async function CDB(res,m,col,key,data){
+	let table = db.collection(col);
+	let item = false;
+	switch(m){
+	case "update":
+		item = await table.get(key);
+		
+		if(!item){
+		  item = await table.set(key, {data:[]})
+		}
+		
+		item=item.props.data;
+		item.push(data);
+		item = await table.set(key, {data:item})
+  console.log(JSON.stringify(item, null, 2))
+	res.json(item).end()	
+	break;
+	
+	case "updateMany":
+		item = await table.get(key);
+		
+		if(!item){
+		  item = await table.set(key, {data:[]})
+		}
+		
+		item=item.props.data;
+		if(Array.isArray(data) && data.length>0){
+		for(let a of data){
+		item.push(a);
+		}
+		}
+		item = await table.set(key, {data:item})
+  console.log(JSON.stringify(item, null, 2))
+	res.json(item).end()	
+	break;
+	
+	case "delete":
+	
+	item = await table.delete(key);
+  console.log(JSON.stringify(item, null, 2))
+	res.json(item).end()
+	break;
+	
+	case "list":
+	
+	item = await table.list();
+  console.log(JSON.stringify(item, null, 2))
+	res.json(item).end()
+	break;
+	
+	default:
+	item = await table.get(key);
   console.log(JSON.stringify(item, null, 2))
   res.json(item).end()
+	break;
+	}
+}
+
+app.post('/:hash/:method/:col/:key', async (req, res) => {
+  console.log(req.body)
+  const {method,hash,col,key} = req.params;
+  if(hash===APP_TOKEN){
+  console.log(`from collection: ${col} delete key: ${key} with params ${JSON.stringify(req.params)}`)
+  CDB(res,method,col,key,req.body)
   }else{
   res.json({msg:"Invalid request"}).end()
   }
@@ -23,14 +77,10 @@ app.post('/:hash/:col/:key', async (req, res) => {
 
 // Delete an item
 app.delete('/:hash/:col/:key', async (req, res) => {
-  const hash = req.params.hash
-  const col = req.params.col
-  const key = req.params.key
+  const {hash,col,key} = req.params;
   if(hash===APP_TOKEN){
   console.log(`from collection: ${col} delete key: ${key} with params ${JSON.stringify(req.params)}`)
-  const item = await db.collection(col).delete(key)
-  console.log(JSON.stringify(item, null, 2))
-  res.json(item).end()
+  CDB(res,"delete",col,key)
   }else{
   res.json({msg:"Invalid request"}).end()
   }
@@ -38,14 +88,10 @@ app.delete('/:hash/:col/:key', async (req, res) => {
 
 // Get a single item
 app.get('/:hash/:col/:key', async (req, res) => {
-  const hash = req.params.hash
-  const col = req.params.col
-  const key = req.params.key
+  const {hash,col,key} = req.params;
   if(hash===APP_TOKEN){
   console.log(`from collection: ${col} get key: ${key} with params ${JSON.stringify(req.params)}`)
-  const item = await db.collection(col).get(key)
-  console.log(JSON.stringify(item, null, 2))
-  res.json(item).end()
+  CDB(res,"get",col,key)
   }else{
   res.json({msg:"Invalid request"}).end()
   }
@@ -53,12 +99,10 @@ app.get('/:hash/:col/:key', async (req, res) => {
 
 // Get a full listing
 app.get('/:hash/:col', async (req, res) => {
-  const hash = req.params.hash
-  const col = req.params.col
+  const {hash,col} = req.params;
   if(hash===APP_TOKEN){
   console.log(`list collection: ${col} with params: ${JSON.stringify(req.params)}`)
-  const items = await db.collection(col).list()
-  console.log(JSON.stringify(items, null, 2))
+  CDB(res,"list",col)
   res.json(items).end()
   }else{
   res.json({msg:"Invalid request"}).end()
