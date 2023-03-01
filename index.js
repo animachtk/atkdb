@@ -65,10 +65,10 @@ async function CDB(res,m,col,key,data){
 }
 
 app.post('/:hash/:method/:col/:key', async (req, res) => {
-  console.log(req.body)
+  //console.log(req.body)
   const {method,hash,col,key} = req.params;
   if(hash===APP_TOKEN){
-  console.log(`from collection: ${col} delete key: ${key} with params ${JSON.stringify(req.params)}`)
+  console.log(`from collection: ${col} ${method} key: ${key} with params ${JSON.stringify(req.params)}`)
   CDB(res,method,col,key,req.body)
   }else{
   res.json({msg:"Invalid request"}).end()
