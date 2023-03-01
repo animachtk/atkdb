@@ -20,7 +20,7 @@ async function CDB(res,m,col,key,data){
 		item=item.props.data;
 		item.push(data);
 		item = await table.set(key, {data:item})
-  console.log(JSON.stringify(item, null, 2))
+  //console.log(JSON.stringify(item, null, 2))
 	res.json(item).end()	
 	break;
 	
@@ -38,27 +38,27 @@ async function CDB(res,m,col,key,data){
 		}
 		}
 		item = await table.set(key, {data:item})
-  console.log(JSON.stringify(item, null, 2))
+  //console.log(JSON.stringify(item, null, 2))
 	res.json(item).end()	
 	break;
 	
 	case "delete":
 	
 	item = await table.delete(key);
-  console.log(JSON.stringify(item, null, 2))
+  //console.log(JSON.stringify(item, null, 2))
 	res.json(item).end()
 	break;
 	
 	case "list":
 	
 	item = await table.list();
-  console.log(JSON.stringify(item, null, 2))
+  //console.log(JSON.stringify(item, null, 2))
 	res.json(item).end()
 	break;
 	
 	default:
 	item = await table.get(key);
-  console.log(JSON.stringify(item, null, 2))
+  //console.log(JSON.stringify(item, null, 2))
   res.json(item).end()
 	break;
 	}
