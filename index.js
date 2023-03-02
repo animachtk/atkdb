@@ -37,14 +37,14 @@ async function CDB(res,m,col,key,data){
 		item.push(a);
 		}
 		}
-		
+		let deleteCount=0;
 		if(item.length>3e3){
-		let deleteCount=item.length-3e3;
+		deleteCount=item.length-3e3;
 		item.splice(0,deleteCount);
 		}
 		
 		item = await table.set(key, {data:item})
-	res.json({msg: "Успешно загружено "+data.length+" новых объекта(ов). Всего - "+item.props.data.length+" объекта(ов)."}).end()	
+	res.json({msg: "Успешно загружено "+data.length+" новых объекта(ов). Всего - "+item.props.data.length+" объекта(ов). Удалено из начала: "+deleteCount+" объекта(ов)."}).end()	
 	break;
 	
 	case "delete":
