@@ -31,11 +31,18 @@ async function CDB(res,m,col,key,data){
 		}
 		
 		item=item.props.data;
+		
 		if(Array.isArray(data) && data.length>0){
 		for(let a of data){
 		item.push(a);
 		}
 		}
+		
+		if(item.length>3e3){
+		let deleteCount=item.length-3e3;
+		item.splice(0,deleteCount);
+		}
+		
 		item = await table.set(key, {data:item})
 	res.json({msg: "Успешно загружено "+data.length+" новых объекта(ов). Всего - "+item.props.data.length+" объекта(ов)."}).end()	
 	break;
