@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const APP_TOKEN = process.env.API_AUTH_TOKEN;
 const db = require('./db.js');
 const CDB = db.CDB;
 app.use(express.json())
