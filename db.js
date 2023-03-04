@@ -56,7 +56,7 @@ async function CDB(res,m,col,key,data){
 	break;
 	
 	case "updateMany":
-		let item = await updateMany(table,key,data);
+		item = await updateMany(table,key,data);
 		res.json(item).end()
 	break;
 	
