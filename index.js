@@ -6,7 +6,7 @@ const APP_TOKEN = process.env.API_AUTH_TOKEN;
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-async function updateMany(table,key,data){
+async function updateMany(table,key,data,res){
 try{
 item = await table.get(key);
 if(!item){
@@ -62,7 +62,7 @@ async function CDB(res,m,col,key,data){
 	break;
 	
 	case "updateMany":
-	updateMany(table,key,data)	
+	updateMany(table,key,data,res)	
 	break;
 	
 	case "delete":
