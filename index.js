@@ -6,7 +6,8 @@ const APP_TOKEN = process.env.API_AUTH_TOKEN;
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-async updateMany(table,key,data){
+async function updateMany(table,key,data){
+try{
 item = await table.get(key);
 if(!item){
 	item = await table.set(key, {data:[]})
@@ -37,7 +38,11 @@ item.splice(0,deleteCount);*/
 		
 item = await table.set(key, {data:item})
 res.json({msg: "Успешно загружено "+data.length+" новых объекта(ов). Всего - "+item.props.data.length+" объекта(ов). Удалено из начала: "+deleteCount+" объекта(ов)."}).end()	
+}catch(e){
+console.log(e)
+res.json({msg: "Ошибка при сохранении "}).end()	
 }
+}	
 
 async function CDB(res,m,col,key,data){
 	let table = db.collection(col);
