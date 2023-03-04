@@ -6,6 +6,39 @@ const APP_TOKEN = process.env.API_AUTH_TOKEN;
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+async updateMany(table,key,data){
+item = await table.get(key);
+if(!item){
+	item = await table.set(key, {data:[]})
+}
+item=item.props.data;
+if(Array.isArray(data) && data.length>0){
+	for(let a of data){
+		item.push(a);
+	}
+}
+let deleteCount=0;
+if(item.length>3e3){
+	let count = 1;
+	let re = /(\-([0-9]))$/;
+	let newcount=key.match(re);
+	
+	if(newcount){
+	count=Number(newcount[2])+1;
+	key=newcount.input.replace(re,'');
+	}
+	
+	key=key+"-"+count;
+	updateMany(table,key,data);
+	return
+/*deleteCount=item.length-3e3;
+item.splice(0,deleteCount);*/
+}
+		
+item = await table.set(key, {data:item})
+res.json({msg: "Успешно загружено "+data.length+" новых объекта(ов). Всего - "+item.props.data.length+" объекта(ов). Удалено из начала: "+deleteCount+" объекта(ов)."}).end()	
+}
+
 async function CDB(res,m,col,key,data){
 	let table = db.collection(col);
 	let item = false;
@@ -24,27 +57,7 @@ async function CDB(res,m,col,key,data){
 	break;
 	
 	case "updateMany":
-		item = await table.get(key);
-		
-		if(!item){
-		  item = await table.set(key, {data:[]})
-		}
-		
-		item=item.props.data;
-		
-		if(Array.isArray(data) && data.length>0){
-		for(let a of data){
-		item.push(a);
-		}
-		}
-		let deleteCount=0;
-		if(item.length>3e3){
-		deleteCount=item.length-3e3;
-		item.splice(0,deleteCount);
-		}
-		
-		item = await table.set(key, {data:item})
-	res.json({msg: "Успешно загружено "+data.length+" новых объекта(ов). Всего - "+item.props.data.length+" объекта(ов). Удалено из начала: "+deleteCount+" объекта(ов)."}).end()	
+	updateMany(table,key,data)	
 	break;
 	
 	case "delete":
