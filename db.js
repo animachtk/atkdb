@@ -34,7 +34,7 @@ item.splice(0,deleteCount);*/
 item = await table.set(key, {data:item})
 res.json({msg: "Успешно загружено "+data.length+" новых объекта(ов). Всего - "+item.props.data.length+" объекта(ов). Удалено из начала: "+deleteCount+" объекта(ов)."}).end()	
 }catch(e){
-res.json({msg: "Ошибка при сохранении."}).end()
+//res.json({msg: "Ошибка при сохранении."}).end()
 console.log(e)
 }
 }	
