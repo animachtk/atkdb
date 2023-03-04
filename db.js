@@ -16,7 +16,7 @@ if(Array.isArray(data) && data.length>0){
 let deleteCount=0;
 if(item.length>3e3){
 	let count = 1;
-	let re = /(\-([0-9]))$/;
+	/*let re = /(\-([0-9]))$/;
 	let newcount=key.match(re);
 	
 	if(newcount){
@@ -24,8 +24,15 @@ if(item.length>3e3){
 	key=newcount.input.replace(re,'');
 	}
 	
-	key=key+"-"+count;
-	return await updateMany(table,key,data);
+	key=key+"-"+count;*/
+	let strarr=key.split('-p-');
+	if(strarr.length===1){
+		key=key+"-p-"+count;
+		return await updateMany(table,key,data);
+	}else if(strarr.length===2){
+		key=strarr[0]+"-p-"+(Number(strarr[0])+1);
+		return await updateMany(table,key,data);
+	}
 /*deleteCount=item.length-3e3;
 item.splice(0,deleteCount);*/
 }
