@@ -1,7 +1,7 @@
 const db = require('@cyclic.sh/dynamodb')
 const APP_TOKEN = process.env.API_AUTH_TOKEN;
 
-async function updateMany(res,table,key,data){
+async function updateMany(table,key,data){
 try{
 item = await table.get(key);
 if(!item){
@@ -25,17 +25,16 @@ if(item.length>3e3){
 	}
 	
 	key=key+"-"+count;
-	updateMany(table,key,data);
-	return
+	return await updateMany(table,key,data);
 /*deleteCount=item.length-3e3;
 item.splice(0,deleteCount);*/
 }
 		
 item = await table.set(key, {data:item});
-res.json({msg: "Успешно загружено "+data.length+" новых объекта(ов). Всего - "+item.props.data.length+" объекта(ов). Удалено из начала: "+deleteCount+" объекта(ов)."}).end();
+return {msg: "Успешно загружено "+data.length+" новых объекта(ов). Всего - "+item.props.data.length+" объекта(ов). Удалено из начала: "+deleteCount+" объекта(ов)."};
 }catch(e){
-res.json({msg: "Ошибка при сохранении."}).end()
 console.log(e)
+return {msg: "Ошибка при сохранении."};
 }
 }	
 
@@ -57,23 +56,23 @@ async function CDB(res,m,col,key,data){
 	break;
 	
 	case "updateMany":
-	let answer = await updateMany(res,table,key,data);	
+		let item = await updateMany(table,key,data);
+		res.json(item).end()
 	break;
 	
 	case "delete":
-	item = await table.delete(key);
-	res.json(item).end()
+		item = await table.delete(key);
+		res.json(item).end()
 	break;
 	
 	case "list":
-	
-	item = await table.list();
-	res.json(item).end()
+		item = await table.list();
+		res.json(item).end()
 	break;
 	
 	default:
-	item = await table.get(key);
-  res.json(item).end()
+		item = await table.get(key);
+		res.json(item).end()
 	break;
 	}
 }
