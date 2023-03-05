@@ -147,6 +147,81 @@ async function CDB(res,m,col,key,data){
 		res.json(item).end()
 	}
 	break;
+			
+	case "restructure":
+
+		item = await table.list();
+		results=item.results;
+		let keys = [];
+		for(let k of results){
+		
+			if(k.key.indexOf(key)>-1){
+			keys.push(k.key)
+			}
+			
+			if(keys.length>0){
+			
+				let items=[];
+				
+				for(let a of keys){
+					item = await table.get(a);
+					let temparr=item?.props?.data||[];
+					if(temparr.length>0){
+						for(let i of temparr){
+							items.push(i)
+						}
+					}
+
+				}
+				console.log(items.length);
+				if(items.length>0){
+				
+					let USERS={};
+
+
+					for(let i of items){
+					let name=i.username;
+					let item=i;
+					delete item.username;
+					if(!USERS.hasOwnProperty(name)){
+					USERS[name]=[]
+					}
+					USERS[name].push(item);
+					}
+
+					let arr=Object.keys(USERS);
+					
+					for(let user of arr){
+						let collection = db.collection("random-usermessages");
+						
+						item = await collection.get(user);
+						
+						if(!item){
+							item = await collection.set(user, {data:[]})
+						}
+						
+						item=item.props.data;
+						
+						for(let a of USERS[user]){
+						let test=item.find(e => e.time===a.time);
+						if(!test){
+						item.push(a);
+						}
+						}
+						
+						colitem = await collection.set(key, {data:item});
+						
+						
+						
+						console.log(user+" updated "+USERS[user].length)
+
+					}
+					
+					
+				}
+			}
+		}
+	break;
 	
 	default:
 		item = await table.get(key);
