@@ -86,18 +86,23 @@ async function CDB(res,m,col,key,data){
 		results=item.results;
 		let keys = [];
 		for(let k of results){
-		if(k.key.indexOf(key)>-1){
-		keys.push(k.key)
-		}
-		if(keys.length>0){
-		let random=Math.floor(Math.random() * keys.length);
-		item = await table.get(keys[random]);
-		let data=item?.props?.data||[];
-		if(data.length>0){
-		let msg=data[Math.floor(Math.random() * data.length)];
-		item=msg
-		}
-		}
+			if(k.key.indexOf(key)>-1){
+				keys.push(k.key)
+			}
+			if(keys.length>0){
+				let random=Math.floor(Math.random() * keys.length);
+				
+				item = await table.get(keys[random]);
+				
+				let data=item?.props?.data||[];
+				
+				if(data.length>0){
+					let msg=data[Math.floor(Math.random() * data.length)];
+					item=msg
+				}
+			}
+		}else{
+			item={msg:"Сообщений с комнатой "+key+" не найдено."}
 		}
 		res.json(item).end()
 	}
@@ -132,8 +137,14 @@ async function CDB(res,m,col,key,data){
 				if(items.length>0){
 				let msg=items[Math.floor(Math.random() * items.length)];
 				item=msg
+				}else{
+				item={msg:"Сообщений с пользователем "+data+" не найдено."}
 				}
+			}else{
+				item={msg:"Сообщений с комнатой "+key+" не найдено."}
 			}
+		}else{
+			item={msg:"Ошибка: ничего не найдено."}
 		}
 		res.json(item).end()
 	}
