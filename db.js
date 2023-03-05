@@ -149,7 +149,7 @@ async function CDB(res,m,col,key,data){
 	break;
 			
 	case "restructure":
-
+	if(key){
 		item = await table.list();
 		results=item.results;
 		let keys = [];
@@ -209,11 +209,11 @@ async function CDB(res,m,col,key,data){
 						//}
 						}
 						
-						colitem = await collection.set(key, {data:item});
+						let colitem = await collection.set(key, {data:USERS[user]});
 						
 						
 						
-						//console.log(user+" updated "+USERS[user].length)
+						console.log(user+" updated "+USERS[user].length)
 
 					}
 					
@@ -221,6 +221,7 @@ async function CDB(res,m,col,key,data){
 				}
 			}
 		}
+	}
 	break;
 	
 	default:
