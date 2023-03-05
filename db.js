@@ -76,6 +76,27 @@ async function CDB(res,m,col,key,data){
 		item = await table.list();
 		res.json(item).end()
 	break;
+			
+	case "random":
+		item = await table.list();
+		results=item.results;
+		let keys = [];
+		for(let k of results){
+		if(k.key.indexOf(key)>-1){
+		keys.push(k.key)
+		}
+		if(keys.length>0){
+		let random=Math.floor(Math.random() * keys.length);
+		item = await table.get(keys[random]);
+		let data=item?.props?.data||[];
+		if(data.length>0){
+		let msg=data[Math.floor(Math.random() * data.length)];
+		item=msg
+		}
+		}
+		}
+		res.json(item).end()
+	break;
 	
 	default:
 		item = await table.get(key);
