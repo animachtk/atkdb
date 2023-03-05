@@ -97,6 +97,40 @@ async function CDB(res,m,col,key,data){
 		}
 		res.json(item).end()
 	break;
+
+	case "by":
+		item = await table.list();
+		results=item.results;
+		let keys = [];
+		for(let k of results){
+		
+			if(k.key.indexOf(key)>-1){
+			keys.push(k.key)
+			}
+			
+			if(keys.length>0){
+				let items=[];
+				
+				for(let a of keys){
+					item = await table.get(a);
+					let temparr=item?.props?.data||[];
+					if(temparr.length>0){
+						for(let i of temparr){
+							if(i.username===data){
+								items.push(i)
+							}
+						}
+					}
+
+				}
+				if(items.length>0){
+				let msg=items[Math.floor(Math.random() * items.length)];
+				item=msg
+				}
+			}
+		}
+		res.json(item).end()
+	break;
 	
 	default:
 		item = await table.get(key);
