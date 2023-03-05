@@ -60,6 +60,18 @@ app.get('/:hash/:col/:key/by/:item', async (req, res) => {
   }
 })
 
+app.get('/:hash/:col/:key/restructure', async (req, res) => {
+  const {hash,col,key} = req.params;
+  if(hash===APP_TOKEN){
+  console.log(`from collection: ${col} get random ${key} by ${item}`)
+  CDB(res,"restructure",col,key)
+  }else{
+  res.json({msg:"Invalid request"}).end()
+  }
+})
+
+
+
 // Get a full listing
 app.get('/:hash/:col', async (req, res) => {
   const {hash,col} = req.params;
