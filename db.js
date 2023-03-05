@@ -46,8 +46,11 @@ return {msg: "Ошибка при сохранении."};
 }	
 
 async function CDB(res,m,col,key,data){
+	
 	let table = db.collection(col);
+	
 	let item = false;
+	
 	switch(m){
 	case "update":
 		item = await table.get(key);
@@ -78,6 +81,7 @@ async function CDB(res,m,col,key,data){
 	break;
 			
 	case "random":
+	if(key){
 		item = await table.list();
 		results=item.results;
 		let keys = [];
@@ -96,9 +100,11 @@ async function CDB(res,m,col,key,data){
 		}
 		}
 		res.json(item).end()
+	}
 	break;
 
 	case "by":
+	if(typeof data === "string"){
 		item = await table.list();
 		results=item.results;
 		let keys = [];
@@ -130,6 +136,7 @@ async function CDB(res,m,col,key,data){
 			}
 		}
 		res.json(item).end()
+	}
 	break;
 	
 	default:
