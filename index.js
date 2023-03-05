@@ -40,11 +40,11 @@ app.get('/:hash/:col/:key', async (req, res) => {
 })
 
 // Get a random item
-app.get('/:hash/random/:key', async (req, res) => {
+app.get('/:hash/:col/:key/random', async (req, res) => {
   const {hash,col,key} = req.params;
   if(hash===APP_TOKEN){
   console.log(`from collection: ${col} get key: ${key} with params ${JSON.stringify(req.params)}`)
-  CDB(res,"random","logs",key)
+  CDB(res,"random",col,key)
   }else{
   res.json({msg:"Invalid request"}).end()
   }
