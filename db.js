@@ -100,9 +100,9 @@ async function CDB(res,m,col,key,data){
 					let msg=data[Math.floor(Math.random() * data.length)];
 					item=msg
 				}
+			}else{
+				item={msg:"Сообщений с комнатой "+key+" не найдено."}
 			}
-		}else{
-			item={msg:"Сообщений с комнатой "+key+" не найдено."}
 		}
 		res.json(item).end()
 	}
