@@ -129,7 +129,7 @@ async function CDB(res,m,col,key,data){
 		results=item.results;
 		let keys = [];
 		for(let k of results){
-			if(k.key.indexOf(key)>-1){
+			if(k.key===key){
 				keys.push(k.key)
 			}
 			if(keys.length>0){
