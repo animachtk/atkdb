@@ -203,17 +203,17 @@ async function CDB(res,m,col,key,data){
 						item=item.props.data;
 						
 						for(let a of USERS[user]){
-						let test=item.find(e => e.time===a.time);
-						if(!test){
+						//let test=item.find(e => e.time===a.time);
+						//if(!test){
 						item.push(a);
-						}
+						//}
 						}
 						
 						colitem = await collection.set(key, {data:item});
 						
 						
 						
-						console.log(user+" updated "+USERS[user].length)
+						//console.log(user+" updated "+USERS[user].length)
 
 					}
 					
