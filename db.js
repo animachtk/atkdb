@@ -143,8 +143,6 @@ async function CDB(res,m,col,key,data){
 			}else{
 				item={msg:"Сообщений с комнатой "+key+" не найдено."}
 			}
-		}else{
-			item={msg:"Ошибка: ничего не найдено."}
 		}
 		res.json(item).end()
 	}
