@@ -125,23 +125,15 @@ async function CDB(res,m,col,key,data){
 			
 	case "random":
 	if(key){
-		item = await table.list();
-		results=item.results;
-		let keys = results.filter(k=>k.key===key)||[];
-			if(keys.length>0){
-				let random=Math.floor(Math.random() * keys.length);
-				
-				item = await table.get(keys[random]);
-				
-				let data=item?.props?.data||[];
-				
-				if(data.length>0){
-					let msg=data[Math.floor(Math.random() * data.length)];
-					item=msg
-				}
-			}else{
-				item={msg:"Сообщений с комнатой "+key+" не найдено."}
-			}
+		item = await table.get(key);
+		item=item?.props?.data||[];
+		if(item.length>0){
+			item = await table.get(key);
+			let msg=item[Math.floor(Math.random() * item.length)];
+			item=msg
+		}else{
+			item={msg:"Сообщений с комнатой "+key+" не найдено."}
+		}
 		res.json(item).end()
 	}
 	break;
@@ -157,7 +149,19 @@ async function CDB(res,m,col,key,data){
 				item = await table.get(key);
 				let temparr=item?.props?.data||[];
 				keyItem=temparr;
-				items=temparr.filter(i=>data.exec(i,data.value))||[];
+				let exec;
+				if(data.exec){
+					exec=eval(data.exec)
+				}else{
+					exec=function(a,b){
+						if(a===b){
+							return true
+						}else{
+							return false
+						}
+					}
+				}
+				items=temparr.filter(i=>exec(i,data.value))||[];
 
 				if(items.length>0){
 				let msg={};
