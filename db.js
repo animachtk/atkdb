@@ -127,11 +127,7 @@ async function CDB(res,m,col,key,data){
 	if(key){
 		item = await table.list();
 		results=item.results;
-		let keys = [];
-		for(let k of results){
-			if(k.key===key){
-				keys.push(k.key)
-			}
+		let keys = results.filter(k=>k.key===key)||[];
 			if(keys.length>0){
 				let random=Math.floor(Math.random() * keys.length);
 				
@@ -146,47 +142,43 @@ async function CDB(res,m,col,key,data){
 			}else{
 				item={msg:"Сообщений с комнатой "+key+" не найдено."}
 			}
-		}
 		res.json(item).end()
 	}
 	break;
 
-	case "by":
-	if(typeof data === "string"){
+	case "find":
+	if(typeof data === "object"){
 		item = await table.list();
 		results=item.results;
-		let keys = [];
-		for(let k of results){
-		
-			if(k.key.indexOf(key)>-1){
-			keys.push(k.key)
-			}
-			
-			if(keys.length>0){
+		let keys = results.filter(k=>k.key===key)||[];
+			if(keys.length===1){
 				let items=[];
-				
-				for(let a of keys){
-					item = await table.get(a);
-					let temparr=item?.props?.data||[];
-					if(temparr.length>0){
-						for(let i of temparr){
-							if(i.username===data){
-								items.push(i)
-							}
-						}
-					}
+				let keyItem=[];
+				item = await table.get(key);
+				let temparr=item?.props?.data||[];
+				keyItem=temparr;
+				items=temparr.filter(i=>data.exec(i,data.value))||[];
 
-				}
 				if(items.length>0){
-				let msg=items[Math.floor(Math.random() * items.length)];
+				let msg={};
+				if(data.method==="random"){
+					msg={data:items[Math.floor(Math.random() * items.length)],method:data.method};
+				}else if(data.method==="delete"){
+					item = await table.set(key, {data:items});
+					let delcount=temparr.length-items.length;
+					msg={msg:"Удалено: "+delcount+" записей из "+col+"/"+key+" Осталось: "+items.length,method:data.method}
+				}else{
+					msg={data:items,method:data.method}
+				}
+				
 				item=msg
 				}else{
-				item={msg:"Сообщений с пользователем "+data+" не найдено."}
+				item={msg:"Совпадений со значением "+(data.value||"empty")+" не найдено."}
 				}
 			}else{
-				item={msg:"Сообщений с комнатой "+key+" не найдено."}
+				item={msg:"Совпадений с ключом "+key+" не найдено."}
 			}
-		}
+
 		res.json(item).end()
 	}
 	break;
