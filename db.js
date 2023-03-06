@@ -128,7 +128,6 @@ async function CDB(res,m,col,key,data){
 		item = await table.get(key);
 		item=item?.props?.data||[];
 		if(item.length>0){
-			item = await table.get(key);
 			let msg=item[Math.floor(Math.random() * item.length)];
 			item=msg
 		}else{
@@ -151,7 +150,7 @@ async function CDB(res,m,col,key,data){
 				keyItem=temparr;
 				let exec;
 				if(data.exec){
-					exec=eval(data.exec)
+					exec=eval('('+data.exec+')')
 				}else{
 					exec=function(a,b){
 						if(a===b){
