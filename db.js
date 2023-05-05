@@ -13,7 +13,7 @@ if(Array.isArray(data) && data.length>0){
 		item.push(a);
 	}
 }
-let deleteCount=0;
+/*let deleteCount=0;
 if(item.length>3e3){
 	let count = 1;
 	/*let re = /(\-([0-9]))$/;
@@ -24,7 +24,8 @@ if(item.length>3e3){
 	key=newcount.input.replace(re,'');
 	}
 	
-	key=key+"-"+count;*/
+	key=key+"-"+count;*
+	
 	let strarr=key.split('-p-');
 	if(strarr.length===1){
 		key=key+"-p-"+count;
@@ -33,8 +34,14 @@ if(item.length>3e3){
 		key=strarr[0]+"-p-"+(Number(strarr[0])+1);
 		return await updateMany(table,key,data);
 	}
-/*deleteCount=item.length-3e3;
-item.splice(0,deleteCount);*/
+//deleteCount=item.length-3e3;
+//item.splice(0,deleteCount);
+}*/
+	
+let deleteCount=0;
+if(item.length>3e3){
+deleteCount=item.length-3e3;
+item.splice(0,deleteCount);
 }
 		
 item = await table.set(key, {data:item});
